@@ -1,9 +1,9 @@
-name: Deploy to S3
+name: Deploy Job
 
 on:
   push:
     branches:
-      - dev   # Trigger on push to main branch
+      - dev   # Trigger on push to dev branch
 
 jobs:
   deploy:
@@ -22,4 +22,11 @@ jobs:
 
     - name: Upload index.html to S3
       run: |
-        aws s3 cp index.html s3://studenthtmlbucket/ 
+        aws s3 cp index.html s3://studenthtmlbucket/
+        echo "✅ File uploaded to S3."
+
+    - name: Wait for 3 minutes before next job
+      run: |
+        echo "⏳ Waiting for 3 minutes..."
+        sleep 180
+        echo "✅ Done waiting, continuing..."
