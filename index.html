@@ -10,16 +10,23 @@ body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  /* Light abstract background with soft shapes */
   background: #f3f6fd;
   background-image: radial-gradient(circle at 20% 20%, #a1c4fd 0%, transparent 25%),
                     radial-gradient(circle at 80% 80%, #c2e9fb 0%, transparent 25%);
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
+}
+
+h1.main-heading {
+  color: #333;
+  font-size: 36px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .container {
@@ -103,7 +110,7 @@ button:hover {
 .error { color: #ffe0e0; }
 .success { color: #e0ffe0; }
 
-/* Dashboard and other styles unchanged */
+/* Dashboard styles remain unchanged */
 #dashboard {
   display: none;
   width: 100%;
@@ -155,21 +162,24 @@ nav a:hover { text-decoration: underline; }
 </head>
 <body>
 
+<!-- Main Heading -->
+<h1 class="main-heading">Student Portal</h1>
+
 <!-- Login + Register Page -->
 <div id="loginRegisterContainer" class="container">
 
-  <!-- Student Login -->
+  <!-- Login Form -->
   <div class="form">
-    <h2>Student Login</h2>
+    <h2>Login</h2>
     <div id="loginMsg" class="error"></div>
     <input type="email" id="loginEmail" placeholder="Email">
     <input type="password" id="loginPassword" placeholder="Password">
     <button onclick="login()">Login</button>
   </div>
 
-  <!-- Student Registration -->
+  <!-- Registration Form -->
   <div class="form">
-    <h2>Student Registration</h2>
+    <h2>Registration</h2>
     <div id="registerMsg" class="error"></div>
     <input type="text" id="regName" placeholder="Full Name">
     <input type="email" id="regEmail" placeholder="Email">
@@ -188,11 +198,11 @@ nav a:hover { text-decoration: underline; }
 
 <!-- Dashboard (unchanged) -->
 <div id="dashboard">
-  <!-- dashboard code here -->
+  <!-- Dashboard code goes here -->
 </div>
 
 <script>
-// JS code unchanged
+// JS code remains unchanged
 </script>
 
 </body>
