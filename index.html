@@ -10,25 +10,27 @@ body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  /* 🟨 changed: background updated to a student image */
-  background: url('https://images.unsplash.com/photo-1606851092212-3a7a0e4a9b04?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
-  background-size: cover;
+}
+
+/* Login/Register page background: soft gradient */
+#loginRegisterContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* student-friendly colors */
 }
 
+/* Form container */
 .container {
-  background: rgba(255, 255, 255, 0.92); /* 🟨 changed: semi-transparent to show background */
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   max-width: 950px;
-  width: 95%;
+  width: 90%;
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
-  backdrop-filter: blur(8px); /* 🟨 added for nice effect */
 }
 
 .form {
@@ -79,11 +81,26 @@ button:hover { background: #0056b3; }
 .error { color: red; }
 .success { color: green; }
 
+/* Dashboard styles */
 #dashboard {
   display: none;
   width: 100%;
-  background: #f0f2f5;
   min-height: 100vh;
+  background: linear-gradient(135deg, #e0f7fa, #80deea); /* soft student-friendly gradient */
+  position: relative; /* for background image placement */
+}
+
+#dashboard::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: url('https://images.unsplash.com/photo-1596496055260-5c1a85f0427c?auto=format&fit=crop&w=400&q=80') no-repeat center center;
+  background-size: contain;
+  opacity: 0.8; /* subtle */
+  pointer-events: none;
 }
 
 nav {
@@ -132,7 +149,6 @@ nav a:hover { text-decoration: underline; }
 
 <!-- Login + Register Page -->
 <div id="loginRegisterContainer" class="container">
-
   <!-- Student Login -->
   <div class="form">
     <h2>Student Login</h2>
@@ -190,15 +206,15 @@ nav a:hover { text-decoration: underline; }
       <h3>High School</h3>
       <input type="text" id="hsName" placeholder="High School Name">
       <input type="text" id="hsGrade" placeholder="Grade / Percentage">
-      <input type="text" id="hsLocation" placeholder="Location"> <!-- 🟨 added -->
+      <input type="text" id="hsLocation" placeholder="Location">
 
       <h3>Bachelor's Degree</h3>
       <input type="text" id="bachelorsDegree" placeholder="Degree Name">
-      <input type="text" id="bachelorsCourse" placeholder="Course Name"> <!-- 🟨 added -->
+      <input type="text" id="bachelorsCourse" placeholder="Course Name">
       <input type="text" id="bachelorsUniversity" placeholder="University Name">
-      <input type="text" id="bachelorsLocation" placeholder="Location"> <!-- 🟨 added -->
+      <input type="text" id="bachelorsLocation" placeholder="Location">
       <input type="text" id="bachelorsYear" placeholder="Year of Completion">
-      <input type="date" id="bachelorsCompletion" placeholder="Degree Completion Date"> <!-- 🟨 added -->
+      <input type="date" id="bachelorsCompletion" placeholder="Degree Completion Date">
       <input type="text" id="bachelorsGrade" placeholder="Grade / Percentage">
 
       <button onclick="saveEducation()">Save</button>
@@ -208,122 +224,63 @@ nav a:hover { text-decoration: underline; }
 </div>
 
 <script>
-// Register student
 function register() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value.trim();
-  const course = document.getElementById('regCourse').value.trim();
-  const msg = document.getElementById('registerMsg');
-
-  if(!name || !email || !password || !course){
+  const name = regName.value.trim();
+  const email = regEmail.value.trim();
+  const password = regPassword.value.trim();
+  const course = regCourse.value.trim();
+  const msg = registerMsg;
+  if (!name || !email || !password || !course) {
     msg.textContent = "⚠️ Please fill all fields.";
     return;
   }
-
-  let users = JSON.parse(localStorage.getItem('users') || '[]');
-  if(users.find(u=>u.email===email)){
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+  if (users.find(u => u.email === email)) {
     msg.textContent = "❌ Email already registered.";
     return;
   }
-
-  users.push({name,email,password,course});
-  localStorage.setItem('users', JSON.stringify(users));
+  users.push({ name, email, password, course });
+  localStorage.setItem("users", JSON.stringify(users));
   msg.textContent = "✅ Registered successfully!";
-  msg.classList.add('success');
-  document.getElementById('regName').value='';
-  document.getElementById('regEmail').value='';
-  document.getElementById('regPassword').value='';
-  document.getElementById('regCourse').value='';
+  msg.classList.add("success");
+  regName.value = regEmail.value = regPassword.value = regCourse.value = "";
 }
 
-// Student login
-function login(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const msg = document.getElementById('loginMsg');
-
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  const user = users.find(u => u.email===email && u.password===password);
-  if(user){
-    localStorage.setItem('loggedInUser', JSON.stringify(user));
+function login() {
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const msg = loginMsg;
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const user = users.find(u => u.email === email && u.password === password);
+  if (user) {
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
     openDashboard(user);
-  }else{
+  } else {
     msg.textContent = "❌ Invalid email or password.";
   }
 }
 
-// Open dashboard
-function openDashboard(user){
-  document.getElementById('loginRegisterContainer').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  document.getElementById('userName').textContent = user.name;
-  showSection('home');
-
-  // Prefill education if exists
-  if(user.education){
-    if(user.education.highSchool){
-      document.getElementById('hsName').value = user.education.highSchool.name || '';
-      document.getElementById('hsGrade').value = user.education.highSchool.grade || '';
-      document.getElementById('hsLocation').value = user.education.highSchool.location || '';
-    }
-    if(user.education.bachelors){
-      document.getElementById('bachelorsDegree').value = user.education.bachelors.degree || '';
-      document.getElementById('bachelorsCourse').value = user.education.bachelors.course || '';
-      document.getElementById('bachelorsUniversity').value = user.education.bachelors.university || '';
-      document.getElementById('bachelorsLocation').value = user.education.bachelors.location || '';
-      document.getElementById('bachelorsYear').value = user.education.bachelors.year || '';
-      document.getElementById('bachelorsCompletion').value = user.education.bachelors.completion || '';
-      document.getElementById('bachelorsGrade').value = user.education.bachelors.grade || '';
-    }
-  }
+function openDashboard(user) {
+  loginRegisterContainer.style.display = "none";
+  dashboard.style.display = "block";
+  userName.textContent = user.name;
+  showSection("home");
 }
 
-// Show section
-function showSection(id){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => (s.style.display = "none"));
+  document.getElementById(id).style.display = "block";
 }
 
-// Logout
-function logout(){
-  localStorage.removeItem('loggedInUser');
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('loginRegisterContainer').style.display='flex';
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  dashboard.style.display = "none";
+  loginRegisterContainer.style.display = "flex";
 }
 
-// Save education
-function saveEducation(){
-  const hsName = document.getElementById('hsName').value.trim();
-  const hsGrade = document.getElementById('hsGrade').value.trim();
-  const hsLocation = document.getElementById('hsLocation').value.trim(); /* 🟨 added */
-  const bachelorsDegree = document.getElementById('bachelorsDegree').value.trim();
-  const bachelorsCourse = document.getElementById('bachelorsCourse').value.trim(); /* 🟨 added */
-  const bachelorsUniversity = document.getElementById('bachelorsUniversity').value.trim();
-  const bachelorsLocation = document.getElementById('bachelorsLocation').value.trim(); /* 🟨 added */
-  const bachelorsYear = document.getElementById('bachelorsYear').value.trim();
-  const bachelorsCompletion = document.getElementById('bachelorsCompletion').value.trim(); /* 🟨 added */
-  const bachelorsGrade = document.getElementById('bachelorsGrade').value.trim();
-  const msg = document.getElementById('eduMsg');
-
-  if(!hsName || !hsGrade || !bachelorsDegree || !bachelorsUniversity || !bachelorsYear || !bachelorsGrade){
-    msg.textContent="⚠️ Please fill all fields.";
-    return;
-  }
-
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  user.education={
-    highSchool:{name:hsName, grade:hsGrade, location:hsLocation},
-    bachelors:{degree:bachelorsDegree, course:bachelorsCourse, university:bachelorsUniversity, location:bachelorsLocation, year:bachelorsYear, completion:bachelorsCompletion, grade:bachelorsGrade}
-  };
-  localStorage.setItem('loggedInUser', JSON.stringify(user));
-  msg.textContent="✅ Education details saved.";
-}
-
-// Auto-login if user already logged in
-window.onload = function(){
-  const loggedIn = JSON.parse(localStorage.getItem('loggedInUser'));
-  if(loggedIn) openDashboard(loggedIn);
+window.onload = function () {
+  const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (loggedIn) openDashboard(loggedIn);
 };
 </script>
 
