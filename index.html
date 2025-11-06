@@ -12,13 +12,15 @@ body {
   padding: 0;
 }
 
-/* Login/Register page background: soft gradient */
+/* 🟨 Login/Register page full-screen background */
 #loginRegisterContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh; /* full screen height */
+  width: 100vw;  /* full screen width */
   background: linear-gradient(135deg, #6a11cb, #2575fc); /* student-friendly colors */
+  padding: 20px; /* spacing on small screens */
 }
 
 /* Form container */
@@ -27,7 +29,7 @@ body {
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   max-width: 950px;
-  width: 90%;
+  width: 100%; /* allow shrink on smaller screens */
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
@@ -87,7 +89,7 @@ button:hover { background: #0056b3; }
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(135deg, #e0f7fa, #80deea); /* soft student-friendly gradient */
-  position: relative; /* for background image placement */
+  position: relative; /* for bottom-right image */
 }
 
 #dashboard::after {
@@ -99,7 +101,7 @@ button:hover { background: #0056b3; }
   height: 200px;
   background: url('https://images.unsplash.com/photo-1596496055260-5c1a85f0427c?auto=format&fit=crop&w=400&q=80') no-repeat center center;
   background-size: contain;
-  opacity: 0.8; /* subtle */
+  opacity: 0.8;
   pointer-events: none;
 }
 
