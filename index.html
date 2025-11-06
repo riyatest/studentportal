@@ -21,20 +21,23 @@ body {
   width: 100vw;  /* full screen width */
   background: linear-gradient(135deg, #6a11cb, #2575fc); /* student-friendly colors */
   padding: 20px; /* spacing on small screens */
+  position: relative;
 }
 
-/* Form container */
+/* Container for forms and image */
 .container {
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   max-width: 950px;
-  width: 100%; /* allow shrink on smaller screens */
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
+  position: relative;
 }
 
+/* Form styling */
 .form {
   flex: 1;
   min-width: 300px;
@@ -83,7 +86,19 @@ button:hover { background: #0056b3; }
 .error { color: red; }
 .success { color: green; }
 
-/* Dashboard styles */
+/* Add books image to right of registration form */
+.books-img {
+  display: none; /* hide on small screens */
+  flex: 1;
+  background: url('https://images.unsplash.com/photo-1581091012184-d7f4d5a2d503?auto=format&fit=crop&w=400&q=80') no-repeat center center;
+  background-size: contain;
+}
+
+@media(min-width:900px) {
+  .books-img { display: block; }
+}
+
+/* Dashboard styling */
 #dashboard {
   display: none;
   width: 100%;
@@ -144,6 +159,7 @@ nav a:hover { text-decoration: underline; }
 
 @media (max-width: 700px) {
   .container { flex-direction: column; }
+  .books-img { display: none; }
 }
 </style>
 </head>
@@ -177,16 +193,21 @@ nav a:hover { text-decoration: underline; }
     </select>
     <button onclick="register()">Register</button>
   </div>
+
+  <!-- Books image in white space -->
+  <div class="books-img"></div>
 </div>
 
 <!-- Dashboard -->
 <div id="dashboard">
   <nav>
     <a onclick="showSection('home')">Home</a>
+    <a onclick="showSection('profile')">Profile</a>
     <a onclick="showSection('education')">Education Details</a>
     <a onclick="logout()">Logout</a>
   </nav>
 
+  <!-- Home Section -->
   <div id="home" class="section">
     <h2>Welcome, <span id="userName"></span> 👋</h2>
     <p>This is your student dashboard.</p>
@@ -202,6 +223,31 @@ nav a:hover { text-decoration: underline; }
     </div>
   </div>
 
+  <!-- Profile Section -->
+  <div id="profile" class="section">
+    <h2>Your Profile</h2>
+    <div class="info-box">
+      <p><strong>Name:</strong> <span id="profileName"></span></p>
+      <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+      <p><strong>Course:</strong> <span id="profileCourse"></span></p>
+
+      <h3>High School</h3>
+      <p><strong>Name:</strong> <span id="profileHSName"></span></p>
+      <p><strong>Grade:</strong> <span id="profileHSGrade"></span></p>
+      <p><strong>Location:</strong> <span id="profileHSLocation"></span></p>
+
+      <h3>Bachelor's Degree</h3>
+      <p><strong>Degree:</strong> <span id="profileBachelorsDegree"></span></p>
+      <p><strong>Course:</strong> <span id="profileBachelorsCourse"></span></p>
+      <p><strong>University:</strong> <span id="profileBachelorsUniversity"></span></p>
+      <p><strong>Location:</strong> <span id="profileBachelorsLocation"></span></p>
+      <p><strong>Year of Completion:</strong> <span id="profileBachelorsYear"></span></p>
+      <p><strong>Degree Completion Date:</strong> <span id="profileBachelorsCompletion"></span></p>
+      <p><strong>Grade:</strong> <span id="profileBachelorsGrade"></span></p>
+    </div>
+  </div>
+
+  <!-- Education Section -->
   <div id="education" class="section">
     <h2>Education Details</h2>
     <div class="edu-box">
@@ -267,6 +313,41 @@ function openDashboard(user) {
   dashboard.style.display = "block";
   userName.textContent = user.name;
   showSection("home");
+
+  // Fill profile info
+  profileName.textContent = user.name;
+  profileEmail.textContent = user.email;
+  profileCourse.textContent = user.course || "";
+
+  profileHSName.textContent = user.education?.highSchool?.name || "";
+  profileHSGrade.textContent = user.education?.highSchool?.grade || "";
+  profileHSLocation.textContent = user.education?.highSchool?.location || "";
+
+  profileBachelorsDegree.textContent = user.education?.bachelors?.degree || "";
+  profileBachelorsCourse.textContent = user.education?.bachelors?.course || "";
+  profileBachelorsUniversity.textContent = user.education?.bachelors?.university || "";
+  profileBachelorsLocation.textContent = user.education?.bachelors?.location || "";
+  profileBachelorsYear.textContent = user.education?.bachelors?.year || "";
+  profileBachelorsCompletion.textContent = user.education?.bachelors?.completion || "";
+  profileBachelorsGrade.textContent = user.education?.bachelors?.grade || "";
+
+  // Prefill education form
+  if(user.education){
+    if(user.education.highSchool){
+      hsName.value = user.education.highSchool.name || '';
+      hsGrade.value = user.education.highSchool.grade || '';
+      hsLocation.value = user.education.highSchool.location || '';
+    }
+    if(user.education.bachelors){
+      bachelorsDegree.value = user.education.bachelors.degree || '';
+      bachelorsCourse.value = user.education.bachelors.course || '';
+      bachelorsUniversity.value = user.education.bachelors.university || '';
+      bachelorsLocation.value = user.education.bachelors.location || '';
+      bachelorsYear.value = user.education.bachelors.year || '';
+      bachelorsCompletion.value = user.education.bachelors.completion || '';
+      bachelorsGrade.value = user.education.bachelors.grade || '';
+    }
+  }
 }
 
 function showSection(id) {
@@ -280,11 +361,24 @@ function logout() {
   loginRegisterContainer.style.display = "flex";
 }
 
-window.onload = function () {
-  const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (loggedIn) openDashboard(loggedIn);
-};
-</script>
-
-</body>
-</html>
+function saveEducation() {
+  const hsNameVal = hsName.value.trim();
+  const hsGradeVal = hsGrade.value.trim();
+  const hsLocationVal = hsLocation.value.trim();
+  const bachelorsDegreeVal = bachelorsDegree.value.trim();
+  const bachelorsCourseVal = bachelorsCourse.value.trim();
+  const bachelorsUniversityVal = bachelorsUniversity.value.trim();
+  const bachelorsLocationVal = bachelorsLocation.value.trim();
+  const bachelorsYearVal = bachelorsYear.value.trim();
+  const bachelorsCompletionVal = bachelorsCompletion.value.trim();
+  const bachelorsGradeVal = bachelorsGrade.value.trim();
+  if(!hsNameVal || !hsGradeVal || !hsLocationVal || !bachelorsDegreeVal || !bachelorsCourseVal || !bachelorsUniversityVal || !bachelorsLocationVal || !bachelorsYearVal || !bachelorsCompletionVal || !bachelorsGradeVal){
+    eduMsg.textContent="⚠️ Please fill all fields.";
+    return;
+  }
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  user.education = {
+    highSchool:{name:hsNameVal, grade:hsGradeVal, location:hsLocationVal},
+    bachelors:{degree:bachelorsDegreeVal, course:bachelorsCourseVal, university:bachelorsUniversityVal, location:bachelorsLocationVal, year:bachelorsYearVal, completion:bachelorsCompletionVal, grade:bachelorsGradeVal}
+  };
+ 
