@@ -10,7 +10,12 @@ body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  /* Light abstract background with soft shapes */
+  background: #f3f6fd;
+  background-image: radial-gradient(circle at 20% 20%, #a1c4fd 0%, transparent 25%),
+                    radial-gradient(circle at 80% 80%, #c2e9fb 0%, transparent 25%);
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,7 +103,7 @@ button:hover {
 .error { color: #ffe0e0; }
 .success { color: #e0ffe0; }
 
-/* Rest of the dashboard unchanged */
+/* Dashboard and other styles unchanged */
 #dashboard {
   display: none;
   width: 100%;
@@ -183,7 +188,7 @@ nav a:hover { text-decoration: underline; }
 
 <!-- Dashboard (unchanged) -->
 <div id="dashboard">
-  <!-- dashboard code here (same as your previous code) -->
+  <!-- dashboard code here -->
 </div>
 
 <script>
