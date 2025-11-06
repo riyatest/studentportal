@@ -40,7 +40,6 @@ h1.main-heading {
   overflow: hidden;
 }
 
-/* Cool gradient backgrounds for forms */
 .form {
   flex: 1;
   min-width: 300px;
@@ -50,13 +49,8 @@ h1.main-heading {
   color: #fff;
 }
 
-.form:nth-child(1) { /* Login form */
-  background: linear-gradient(135deg, #42a5f5, #478ed1);
-}
-
-.form:nth-child(2) { /* Registration form */
-  background: linear-gradient(135deg, #ff8a65, #ff7043);
-}
+.form:nth-child(1) { background: linear-gradient(135deg, #42a5f5, #478ed1); }
+.form:nth-child(2) { background: linear-gradient(135deg, #ff8a65, #ff7043); }
 
 .form h2 {
   text-align: center;
@@ -78,7 +72,6 @@ input:focus, select:focus {
   box-shadow: 0 0 8px rgba(255,255,255,0.5);
 }
 
-/* Modern gradient buttons */
 button {
   width: 100%;
   padding: 14px;
@@ -92,9 +85,7 @@ button {
   transition: all 0.3s ease;
 }
 
-.form:nth-child(2) button {
-  background: linear-gradient(45deg, #ff8a65, #ff7043);
-}
+.form:nth-child(2) button { background: linear-gradient(45deg, #ff8a65, #ff7043); }
 
 button:hover {
   transform: translateY(-2px);
@@ -110,7 +101,7 @@ button:hover {
 .error { color: #ffe0e0; }
 .success { color: #e0ffe0; }
 
-/* Dashboard styles remain unchanged */
+/* Dashboard */
 #dashboard {
   display: none;
   width: 100%;
@@ -162,13 +153,11 @@ nav a:hover { text-decoration: underline; }
 </head>
 <body>
 
-<!-- Main Heading -->
 <h1 class="main-heading">Student Portal</h1>
 
-<!-- Login + Register Page -->
 <div id="loginRegisterContainer" class="container">
 
-  <!-- Login Form -->
+  <!-- Login -->
   <div class="form">
     <h2>Login</h2>
     <div id="loginMsg" class="error"></div>
@@ -177,7 +166,7 @@ nav a:hover { text-decoration: underline; }
     <button onclick="login()">Login</button>
   </div>
 
-  <!-- Registration Form -->
+  <!-- Registration -->
   <div class="form">
     <h2>Registration</h2>
     <div id="registerMsg" class="error"></div>
@@ -196,14 +185,161 @@ nav a:hover { text-decoration: underline; }
   </div>
 </div>
 
-<!-- Dashboard (unchanged) -->
+<!-- Dashboard -->
 <div id="dashboard">
-  <!-- Dashboard code goes here -->
+  <nav>
+    <a onclick="showSection('home')">Home</a>
+    <a onclick="showSection('documents')">Submit Documents</a>
+    <a onclick="showSection('education')">Education Details</a>
+    <a onclick="logout()">Logout</a>
+  </nav>
+
+  <div id="home" class="section">
+    <h2>Welcome, <span id="userName"></span> 👋</h2>
+    <p>This is your student dashboard.</p>
+    <div class="info-box">
+      <h3>Registration Process</h3>
+      <ol>
+        <li>Fill education details (High School & Bachelor's Degree).</li>
+        <li>Upload all required documents (multiple files allowed).</li>
+        <li>Verify email and contact information.</li>
+        <li>Complete all steps to confirm registration.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="documents" class="section">
+    <h2>Submit Documents</h2>
+    <div class="upload-box">
+      <input type="file" id="docUpload" multiple>
+      <button onclick="submitDoc()">Upload</button>
+      <p id="docMsg"></p>
+    </div>
+  </div>
+
+  <div id="education" class="section">
+    <h2>Education Details</h2>
+    <div class="edu-box">
+      <input type="text" id="hsName" placeholder="High School Name">
+      <input type="text" id="hsGrade" placeholder="Grade / Percentage">
+      <input type="text" id="bachelorsDegree" placeholder="Bachelor's Degree">
+      <input type="text" id="bachelorsUniversity" placeholder="University Name">
+      <input type="text" id="bachelorsYear" placeholder="Year of Completion">
+      <input type="text" id="bachelorsGrade" placeholder="Grade / Percentage">
+      <button onclick="saveEducation()">Save</button>
+      <p id="eduMsg"></p>
+    </div>
+  </div>
 </div>
 
 <script>
-// JS code remains unchanged
-</script>
+// Register
+function register() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  const course = document.getElementById('regCourse').value.trim();
+  const msg = document.getElementById('registerMsg');
 
+  if(!name || !email || !password || !course){
+    msg.textContent = "⚠️ Please fill all fields.";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem('users') || '[]');
+  if(users.find(u=>u.email===email)){
+    msg.textContent = "❌ Email already registered.";
+    return;
+  }
+
+  users.push({name,email,password,course});
+  localStorage.setItem('users', JSON.stringify(users));
+  msg.textContent = "✅ Registered successfully!";
+  msg.classList.add('success');
+
+  document.getElementById('regName').value='';
+  document.getElementById('regEmail').value='';
+  document.getElementById('regPassword').value='';
+  document.getElementById('regCourse').value='';
+}
+
+// Login
+function login(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const msg = document.getElementById('loginMsg');
+
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(u => u.email===email && u.password===password);
+  if(user){
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
+    openDashboard(user);
+  } else {
+    msg.textContent = "❌ Invalid email or password.";
+  }
+}
+
+// Dashboard
+function openDashboard(user){
+  document.getElementById('loginRegisterContainer').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('userName').textContent = user.name;
+
+  if(user.education){
+    document.getElementById('hsName').value = user.education.highSchool?.name || '';
+    document.getElementById('hsGrade').value = user.education.highSchool?.grade || '';
+    document.getElementById('bachelorsDegree').value = user.education.bachelors?.degree || '';
+    document.getElementById('bachelorsUniversity').value = user.education.bachelors?.university || '';
+    document.getElementById('bachelorsYear').value = user.education.bachelors?.year || '';
+    document.getElementById('bachelorsGrade').value = user.education.bachelors?.grade || '';
+  }
+
+  showSection('home');
+}
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+function logout(){
+  localStorage.removeItem('loggedInUser');
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginRegisterContainer').style.display='flex';
+}
+
+// Documents
+function submitDoc(){
+  const files = document.getElementById('docUpload').files;
+  const msg = document.getElementById('docMsg');
+  if(files.length===0){ msg.textContent="⚠️ Please select files."; return; }
+
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  user.documents = Array.from(files).map(f=>f.name);
+  localStorage.setItem('loggedInUser', JSON.stringify(user));
+  msg.textContent = `✅ Uploaded: ${user.documents.join(', ')}`;
+}
+
+// Save education
+function saveEducation(){
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  user.education = {
+    highSchool: {name: document.getElementById('hsName').value.trim(),
+                 grade: document.getElementById('hsGrade').value.trim()},
+    bachelors: {degree: document.getElementById('bachelorsDegree').value.trim(),
+                university: document.getElementById('bachelorsUniversity').value.trim(),
+                year: document.getElementById('bachelorsYear').value.trim(),
+                grade: document.getElementById('bachelorsGrade').value.trim()}
+  };
+  localStorage.setItem('loggedInUser', JSON.stringify(user));
+  document.getElementById('eduMsg').textContent = "✅ Education details saved.";
+}
+
+// Auto-login
+window.onload = function(){
+  const loggedIn = JSON.parse(localStorage.getItem('loggedInUser'));
+  if(loggedIn) openDashboard(loggedIn);
+};
+</script>
 </body>
 </html>
