@@ -381,4 +381,15 @@ function saveEducation() {
     highSchool:{name:hsNameVal, grade:hsGradeVal, location:hsLocationVal},
     bachelors:{degree:bachelorsDegreeVal, course:bachelorsCourseVal, university:bachelorsUniversityVal, location:bachelorsLocationVal, year:bachelorsYearVal, completion:bachelorsCompletionVal, grade:bachelorsGradeVal}
   };
- 
+  localStorage.setItem('loggedInUser', JSON.stringify(user));
+  eduMsg.textContent="✅ Education details saved.";
+}
+
+window.onload = function () {
+  const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (loggedIn) openDashboard(loggedIn);
+};
+</script>
+
+</body>
+</html>
