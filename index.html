@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Student Portal - Fixed Working Version</title>
+<title>Student Portal</title>
 <style>
 * { box-sizing: border-box; }
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #00c6ff, #0072ff); /* 🟡 Changed gradient color */
+  /* 🟡 Changed background from gradient to image */
+  background: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +20,7 @@ body {
 }
 
 .container {
-  background: #fff;
+  background: rgba(255,255,255,0.95);
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   max-width: 950px;
@@ -39,20 +41,19 @@ input, select {
   border: 1px solid #ccc;
   font-size: 15px;
 }
-input:focus, select:focus { border-color: #00bfff; outline: none; }
+input:focus, select:focus { border-color: #007bff; outline: none; }
 
 button {
   width: 100%;
   padding: 12px;
-  background: #28a745; /* 🟡 Changed button color to green */
+  background: #007bff;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  transition: background 0.3s;
 }
-button:hover { background: #1e7e34; }
+button:hover { background: #0056b3; }
 
 .error, .success { text-align: center; font-size: 14px; margin-bottom: 10px; }
 .error { color: red; }
@@ -75,13 +76,12 @@ nav a:hover { text-decoration: underline; }
 .section {
   display: none;
   padding: 25px;
-  animation: fadeIn 0.5s ease-in-out; /* 🟡 Added fade animation */
+  animation: fadeIn 0.5s ease-in-out;
 }
 @keyframes fadeIn {
   from {opacity: 0; transform: translateY(10px);}
   to {opacity: 1; transform: translateY(0);}
 }
-
 .section h2 { color: #007bff; }
 
 .info-box {
@@ -93,26 +93,23 @@ nav a:hover { text-decoration: underline; }
   max-width: 600px;
 }
 
-.upload-box, .edu-box { max-width: 500px; margin: 20px auto; text-align: left; }
+.upload-box, .edu-box { max-width: 600px; margin: 20px auto; text-align: left; }
 
-footer {
-  text-align: center;
-  padding: 15px;
-  background: #007bff;
-  color: white;
+@media (max-width: 700px) {
+  .container { flex-direction: column; }
 }
 </style>
 </head>
 <body>
 
-<!-- Login + Register Page -->
+<!-- Login + Register -->
 <div id="loginRegisterContainer" class="container">
   <div class="form">
     <h2>Student Login</h2>
     <div id="loginMsg" class="error"></div>
     <input type="email" id="loginEmail" placeholder="Email" />
     <input type="password" id="loginPassword" placeholder="Password" />
-    <button type="button" onclick="login()">Login</button> <!-- 🟡 type="button" -->
+    <button type="button" onclick="login()">Login</button>
   </div>
 
   <div class="form" style="background:#f7f9fc;">
@@ -129,7 +126,7 @@ footer {
       <option>Mechanical</option>
       <option>Civil</option>
     </select>
-    <button type="button" onclick="register()">Register</button> <!-- 🟡 type="button" -->
+    <button type="button" onclick="register()">Register</button>
   </div>
 </div>
 
@@ -138,7 +135,7 @@ footer {
   <nav>
     <a onclick="showSection('home')">Home</a>
     <a onclick="showSection('education')">Education Details</a>
-    <a onclick="showSection('profile')">Profile</a> <!-- 🟡 Added -->
+    <a onclick="showSection('profile')">Profile</a>
     <a onclick="logout()">Logout</a>
   </nav>
 
@@ -147,24 +144,30 @@ footer {
     <div class="info-box">
       <h3>Registration Process</h3>
       <ol>
-        <li>Fill education details (High School & Bachelor's Degree).</li>
-        <li>Upload all required documents.</li>
-        <li>Verify email and contact information.</li>
+        <li>Fill out education details below.</li>
+        <li>Upload your academic documents.</li>
+        <li>Verify and save your profile info.</li>
       </ol>
     </div>
   </div>
 
+  <!-- 🟡 Expanded Education Section -->
   <div id="education" class="section">
     <h2>Education Details</h2>
     <div class="edu-box">
-      <input type="text" id="highschool" placeholder="High School Name" />
-      <input type="text" id="bachelor" placeholder="Bachelor’s Degree / Major" />
+      <h3>Bachelor’s Degree Information</h3>
+      <input type="text" id="bachelorsCourse" placeholder="Course Name (e.g., Computer Science)" />
+      <input type="text" id="bachelorsDegree" placeholder="Degree Title (e.g., B.Tech, B.Sc)" />
+      <input type="text" id="bachelorsUniversity" placeholder="University Name" />
+      <input type="text" id="bachelorsLocation" placeholder="Location (City, Country)" />
+      <input type="text" id="bachelorsCompletion" placeholder="Completion Date (e.g., May 2024)" />
+      <input type="text" id="bachelorsGrade" placeholder="Grade / Percentage" />
       <button type="button" onclick="saveEducation()">Save Education</button>
       <p id="eduMsg"></p>
     </div>
   </div>
 
-  <div id="profile" class="section"> <!-- 🟡 Added -->
+  <div id="profile" class="section">
     <h2>Profile Information</h2>
     <div class="edu-box">
       <p><strong>Name:</strong> <span id="profileName"></span></p>
@@ -180,25 +183,16 @@ footer {
   </div>
 </div>
 
-<footer>© 2025 Student Portal | Developed by You</footer>
-
 <script>
 // 🟡 Utility functions
 function getUsers() {
-  try {
-    return JSON.parse(localStorage.getItem("users")) || [];
-  } catch {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem("users")) || []; }
+  catch { return []; }
 }
-function saveUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
-}
-function normEmail(email) {
-  return email.trim().toLowerCase();
-}
+function saveUsers(users) { localStorage.setItem("users", JSON.stringify(users)); }
+function normEmail(email) { return email.trim().toLowerCase(); }
 
-// 🟡 Registration
+// Register student
 function register() {
   const name = document.getElementById("regName").value.trim();
   const email = normEmail(document.getElementById("regEmail").value);
@@ -207,38 +201,36 @@ function register() {
   const msg = document.getElementById("registerMsg");
 
   if (!name || !email || !password || !course) {
-    msg.textContent = "All fields required!";
+    msg.textContent = "⚠️ Please fill all fields.";
     return;
   }
 
   let users = getUsers();
   if (users.some(u => u.email === email)) {
-    msg.textContent = "Email already registered!";
+    msg.textContent = "❌ Email already registered.";
     return;
   }
 
   users.push({ name, email, password, course, education: {}, docs: [] });
   saveUsers(users);
-
-  msg.style.color = "green";
-  msg.textContent = "Registered successfully! You can login now.";
+  msg.classList.add('success');
+  msg.textContent = "✅ Registered successfully! You can login now.";
   document.getElementById("regName").value = "";
   document.getElementById("regEmail").value = "";
   document.getElementById("regPassword").value = "";
   document.getElementById("regCourse").value = "";
 }
 
-// 🟡 Login
+// Login student
 function login() {
   const email = normEmail(document.getElementById("loginEmail").value);
   const password = document.getElementById("loginPassword").value;
   const msg = document.getElementById("loginMsg");
-
   let users = getUsers();
   const user = users.find(u => u.email === email && u.password === password);
 
   if (!user) {
-    msg.textContent = "Invalid credentials!";
+    msg.textContent = "❌ Invalid credentials.";
     return;
   }
 
@@ -246,7 +238,7 @@ function login() {
   openDashboard(user);
 }
 
-// 🟡 Open Dashboard
+// Open dashboard
 function openDashboard(user) {
   document.getElementById("loginRegisterContainer").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
@@ -255,67 +247,80 @@ function openDashboard(user) {
   document.getElementById("profileEmail").textContent = user.email;
   document.getElementById("profileCourse").textContent = user.course;
   showSection("home");
+
+  // Prefill education data if exists
+  if (user.education) {
+    document.getElementById("bachelorsCourse").value = user.education.course || "";
+    document.getElementById("bachelorsDegree").value = user.education.degree || "";
+    document.getElementById("bachelorsUniversity").value = user.education.university || "";
+    document.getElementById("bachelorsLocation").value = user.education.location || "";
+    document.getElementById("bachelorsCompletion").value = user.education.completion || "";
+    document.getElementById("bachelorsGrade").value = user.education.grade || "";
+  }
 }
 
-// 🟡 Section switching
+// Show section
 function showSection(id) {
   document.querySelectorAll(".section").forEach(s => s.style.display = "none");
   document.getElementById(id).style.display = "block";
 }
 
-// 🟡 Save Education
-function saveEducation() {
-  const highschool = document.getElementById("highschool").value;
-  const bachelor = document.getElementById("bachelor").value;
-  const msg = document.getElementById("eduMsg");
-
-  let user = JSON.parse(localStorage.getItem("loggedInUser"));
-  let users = getUsers();
-
-  user.education = { highschool, bachelor };
-  users = users.map(u => u.email === user.email ? user : u);
-
-  saveUsers(users);
-  localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-  msg.style.color = "green";
-  msg.textContent = "Education saved successfully!";
-}
-
-// 🟡 Upload Docs
-function submitDoc() {
-  const files = document.getElementById("docUpload").files;
-  const msg = document.getElementById("docMsg");
-  if (files.length === 0) {
-    msg.style.color = "red";
-    msg.textContent = "Please select at least one file.";
-    return;
-  }
-
-  let user = JSON.parse(localStorage.getItem("loggedInUser"));
-  let users = getUsers();
-
-  user.docs = [...user.docs, ...Array.from(files).map(f => f.name)];
-  users = users.map(u => u.email === user.email ? user : u);
-
-  saveUsers(users);
-  localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-  msg.style.color = "green";
-  msg.textContent = "Documents uploaded successfully!";
-}
-
-// 🟡 Logout
+// Logout
 function logout() {
   localStorage.removeItem("loggedInUser");
   document.getElementById("dashboard").style.display = "none";
   document.getElementById("loginRegisterContainer").style.display = "flex";
 }
 
-// 🟡 Auto-login if session exists
-window.onload = () => {
+// Save education
+function saveEducation() {
+  const course = document.getElementById("bachelorsCourse").value.trim();
+  const degree = document.getElementById("bachelorsDegree").value.trim();
+  const university = document.getElementById("bachelorsUniversity").value.trim();
+  const location = document.getElementById("bachelorsLocation").value.trim();
+  const completion = document.getElementById("bachelorsCompletion").value.trim();
+  const grade = document.getElementById("bachelorsGrade").value.trim();
+  const msg = document.getElementById("eduMsg");
+
+  if (!course || !degree || !university || !location || !completion || !grade) {
+    msg.textContent = "⚠️ Please fill all fields.";
+    return;
+  }
+
+  let user = JSON.parse(localStorage.getItem("loggedInUser"));
+  let users = getUsers();
+
+  user.education = { course, degree, university, location, completion, grade };
+  users = users.map(u => u.email === user.email ? user : u);
+
+  saveUsers(users);
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+  msg.classList.add('success');
+  msg.textContent = "✅ Education details saved.";
+}
+
+// Upload documents
+function submitDoc() {
+  const files = document.getElementById("docUpload").files;
+  const msg = document.getElementById("docMsg");
+  if (files.length === 0) {
+    msg.textContent = "⚠️ Please select files.";
+    return;
+  }
+
+  let fileNames = Array.from(files).map(f => f.name);
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user) openDashboard(user);
+  user.docs = fileNames;
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+  msg.classList.add('success');
+  msg.textContent = `✅ Uploaded Documents: ${fileNames.join(', ')}`;
+}
+
+// Auto-login
+window.onload = function() {
+  const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (loggedIn) openDashboard(loggedIn);
 };
 </script>
 </body>
