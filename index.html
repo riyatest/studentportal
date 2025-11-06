@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Student Portal (Fixed)</title>
+<title>Student Portal - Fixed Working Version</title>
 <style>
 * { box-sizing: border-box; }
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #00c6ff, #0072ff); /* 🟡 CHANGED: Updated gradient color */
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* 🟡 Changed gradient color */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,13 +39,12 @@ input, select {
   border: 1px solid #ccc;
   font-size: 15px;
 }
-
-input:focus, select:focus { border-color: #00bfff; outline: none; } /* 🟡 CHANGED color */
+input:focus, select:focus { border-color: #00bfff; outline: none; }
 
 button {
   width: 100%;
   padding: 12px;
-  background: #28a745; /* 🟡 CHANGED button color to green */
+  background: #28a745; /* 🟡 Changed button color to green */
   color: white;
   border: none;
   border-radius: 8px;
@@ -53,7 +52,7 @@ button {
   font-size: 16px;
   transition: background 0.3s;
 }
-button:hover { background: #1e7e34; } /* 🟡 CHANGED hover color */
+button:hover { background: #1e7e34; }
 
 .error, .success { text-align: center; font-size: 14px; margin-bottom: 10px; }
 .error { color: red; }
@@ -76,7 +75,7 @@ nav a:hover { text-decoration: underline; }
 .section {
   display: none;
   padding: 25px;
-  animation: fadeIn 0.5s ease-in-out; /* 🟡 NEW: Added fade animation */
+  animation: fadeIn 0.5s ease-in-out; /* 🟡 Added fade animation */
 }
 @keyframes fadeIn {
   from {opacity: 0; transform: translateY(10px);}
@@ -96,30 +95,26 @@ nav a:hover { text-decoration: underline; }
 
 .upload-box, .edu-box { max-width: 500px; margin: 20px auto; text-align: left; }
 
-footer { /* 🟡 NEW: Added footer styling */
+footer {
   text-align: center;
   padding: 15px;
   background: #007bff;
   color: white;
 }
-
-@media (max-width: 700px) { .container { flex-direction: column; } }
 </style>
 </head>
 <body>
 
 <!-- Login + Register Page -->
 <div id="loginRegisterContainer" class="container">
-  <!-- Student Login -->
   <div class="form">
     <h2>Student Login</h2>
     <div id="loginMsg" class="error"></div>
     <input type="email" id="loginEmail" placeholder="Email" />
     <input type="password" id="loginPassword" placeholder="Password" />
-    <button type="button" onclick="login()">Login</button> <!-- 🟡 ADDED type="button" -->
+    <button type="button" onclick="login()">Login</button> <!-- 🟡 type="button" -->
   </div>
 
-  <!-- Student Registration -->
   <div class="form" style="background:#f7f9fc;">
     <h2>Student Registration</h2>
     <div id="registerMsg" class="error"></div>
@@ -134,7 +129,7 @@ footer { /* 🟡 NEW: Added footer styling */
       <option>Mechanical</option>
       <option>Civil</option>
     </select>
-    <button type="button" onclick="register()">Register</button> <!-- 🟡 ADDED type="button" -->
+    <button type="button" onclick="register()">Register</button> <!-- 🟡 type="button" -->
   </div>
 </div>
 
@@ -143,7 +138,7 @@ footer { /* 🟡 NEW: Added footer styling */
   <nav>
     <a onclick="showSection('home')">Home</a>
     <a onclick="showSection('education')">Education Details</a>
-    <a onclick="showSection('profile')">Profile</a> <!-- 🟡 NEW: Added Profile tab -->
+    <a onclick="showSection('profile')">Profile</a> <!-- 🟡 Added -->
     <a onclick="logout()">Logout</a>
   </nav>
 
@@ -153,19 +148,23 @@ footer { /* 🟡 NEW: Added footer styling */
       <h3>Registration Process</h3>
       <ol>
         <li>Fill education details (High School & Bachelor's Degree).</li>
-        <li>Upload all required documents (multiple files allowed).</li>
+        <li>Upload all required documents.</li>
         <li>Verify email and contact information.</li>
-        <li>Complete all steps to confirm registration.</li>
       </ol>
-      <p style="color:#007bff;font-weight:bold;">Tip: Upload clear, accurate files for faster approval.</p>
     </div>
   </div>
 
   <div id="education" class="section">
-    <!-- unchanged content -->
+    <h2>Education Details</h2>
+    <div class="edu-box">
+      <input type="text" id="highschool" placeholder="High School Name" />
+      <input type="text" id="bachelor" placeholder="Bachelor’s Degree / Major" />
+      <button type="button" onclick="saveEducation()">Save Education</button>
+      <p id="eduMsg"></p>
+    </div>
   </div>
 
-  <div id="profile" class="section"> <!-- 🟡 NEW: Added Profile section -->
+  <div id="profile" class="section"> <!-- 🟡 Added -->
     <h2>Profile Information</h2>
     <div class="edu-box">
       <p><strong>Name:</strong> <span id="profileName"></span></p>
@@ -181,31 +180,143 @@ footer { /* 🟡 NEW: Added footer styling */
   </div>
 </div>
 
-<footer>© 2025 Student Portal | Developed by Your Name</footer> <!-- 🟡 NEW: Footer added -->
+<footer>© 2025 Student Portal | Developed by You</footer>
 
 <script>
-/* 🟡 NEW: Safe JSON parsing + normalization + message helpers added here */
-function safeGet(key) { ... }
-function saveUsers(users) { ... }
-function normEmail(email){ ... }
-function setMessage(el,text,type){ ... }
+// 🟡 Utility functions
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("users")) || [];
+  } catch {
+    return [];
+  }
+}
+function saveUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+function normEmail(email) {
+  return email.trim().toLowerCase();
+}
 
-/* 🟡 FIXED: Register/Login now case-insensitive and safe */
-function register(){ ... }
-function login(){ ... }
+// 🟡 Registration
+function register() {
+  const name = document.getElementById("regName").value.trim();
+  const email = normEmail(document.getElementById("regEmail").value);
+  const password = document.getElementById("regPassword").value;
+  const course = document.getElementById("regCourse").value;
+  const msg = document.getElementById("registerMsg");
 
-/* 🟡 FIXED: openDashboard now pre-fills profile section */
-function openDashboard(user){ ... }
+  if (!name || !email || !password || !course) {
+    msg.textContent = "All fields required!";
+    return;
+  }
 
-/* 🟡 FIXED: saveEducation() now updates both loggedInUser + users[] */
-function saveEducation(){ ... }
+  let users = getUsers();
+  if (users.some(u => u.email === email)) {
+    msg.textContent = "Email already registered!";
+    return;
+  }
 
-/* 🟡 FIXED: submitDoc() now updates both loggedInUser + users[] */
-function submitDoc(){ ... }
+  users.push({ name, email, password, course, education: {}, docs: [] });
+  saveUsers(users);
 
-/* 🟡 NEW: Auto-login improved */
-window.onload = function(){ ... };
+  msg.style.color = "green";
+  msg.textContent = "Registered successfully! You can login now.";
+  document.getElementById("regName").value = "";
+  document.getElementById("regEmail").value = "";
+  document.getElementById("regPassword").value = "";
+  document.getElementById("regCourse").value = "";
+}
+
+// 🟡 Login
+function login() {
+  const email = normEmail(document.getElementById("loginEmail").value);
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
+
+  let users = getUsers();
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (!user) {
+    msg.textContent = "Invalid credentials!";
+    return;
+  }
+
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+  openDashboard(user);
+}
+
+// 🟡 Open Dashboard
+function openDashboard(user) {
+  document.getElementById("loginRegisterContainer").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("userName").textContent = user.name;
+  document.getElementById("profileName").textContent = user.name;
+  document.getElementById("profileEmail").textContent = user.email;
+  document.getElementById("profileCourse").textContent = user.course;
+  showSection("home");
+}
+
+// 🟡 Section switching
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
+}
+
+// 🟡 Save Education
+function saveEducation() {
+  const highschool = document.getElementById("highschool").value;
+  const bachelor = document.getElementById("bachelor").value;
+  const msg = document.getElementById("eduMsg");
+
+  let user = JSON.parse(localStorage.getItem("loggedInUser"));
+  let users = getUsers();
+
+  user.education = { highschool, bachelor };
+  users = users.map(u => u.email === user.email ? user : u);
+
+  saveUsers(users);
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+  msg.style.color = "green";
+  msg.textContent = "Education saved successfully!";
+}
+
+// 🟡 Upload Docs
+function submitDoc() {
+  const files = document.getElementById("docUpload").files;
+  const msg = document.getElementById("docMsg");
+  if (files.length === 0) {
+    msg.style.color = "red";
+    msg.textContent = "Please select at least one file.";
+    return;
+  }
+
+  let user = JSON.parse(localStorage.getItem("loggedInUser"));
+  let users = getUsers();
+
+  user.docs = [...user.docs, ...Array.from(files).map(f => f.name)];
+  users = users.map(u => u.email === user.email ? user : u);
+
+  saveUsers(users);
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+  msg.style.color = "green";
+  msg.textContent = "Documents uploaded successfully!";
+}
+
+// 🟡 Logout
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginRegisterContainer").style.display = "flex";
+}
+
+// 🟡 Auto-login if session exists
+window.onload = () => {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (user) openDashboard(user);
+};
 </script>
-
 </body>
 </html>
