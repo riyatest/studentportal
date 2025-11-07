@@ -49,13 +49,13 @@ h1.main-heading {
   color: #fff;
 }
   
-<!--
+
 .form:nth-child(1) { background: linear-gradient(135deg, #42a5f5, #478ed1); }
 .form:nth-child(2) { background: linear-gradient(135deg, #ff8a65, #ff7043); }
-  -->
+<!--
 .form:nth-child(1) { background: linear-gradient(135deg, #8B5E3C, #A9745B); }
 .form:nth-child(2) { background: linear-gradient(135deg, #A9745B, #C39E7C); }
-
+-->
 .form h2 {
   text-align: center;
   margin-bottom: 20px;
@@ -80,11 +80,10 @@ button {
   width: 100%;
   padding: 14px;
   
-  <!--
   background: linear-gradient(45deg, #42a5f5, #478ed1);
-  -->
+  <!--
   background: linear-gradient(45deg, #8B5E3C, #A9745B);
-
+ -->
   color: white;
   border: none;
   border-radius: 12px;
@@ -94,11 +93,13 @@ button {
   transition: all 0.3s ease;
 }
   
-<!--
+
 .form:nth-child(2) button { background: linear-gradient(45deg, #ff8a65, #ff7043); }
--->
+  
+<!--
  .form:nth-child(2) button { background: linear-gradient(45deg, #A9745B, #C39E7C); }
- 
+ -->
+  
 button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
@@ -201,9 +202,9 @@ nav a:hover { text-decoration: underline; }
 <div id="dashboard">
   <nav>
     <a onclick="showSection('home')">Home</a>
-    <!--
+    
     <a onclick="showSection('documents')">Submit Documents</a>
-    -->
+    
     <a onclick="showSection('education')">Education Details</a>
     <a onclick="logout()">Logout</a>
   </nav>
